@@ -1,0 +1,9 @@
+runtime: python39  # or another supported version
+entrypoint: gunicorn -b :$PORT server:app
+
+handlers:
+- url: /.*
+  script: auto
+  - url: /
+  static_files: index.html
+  upload: index.html
