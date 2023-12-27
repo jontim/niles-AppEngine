@@ -70,33 +70,33 @@ document.addEventListener('DOMContentLoaded', () => {
             heroVideo.style.display = 'block';
             heroVideo.play();
         }
-
+        
         const promptInput = document.getElementById('query-input');
         const responseBox = document.getElementById('response-box');
         const selectedIntent = document.querySelector('input[name="intent"]:checked');
-
+        
         if (selectedIntent && promptInput.value.trim() !== '') {
             const number = selectedIntent.value;
-            const script = number === '3' ? 'assistants api_niles_info.py' : 'assistants api_niles_coach.py';
-
+            const prompt = number + ' ' + promptInput.value;
+        
             responseBox.textContent = `Your query: ${promptInput.value}\nProcessing...`;
-
-            // Updated fetch URL to the relative path for the API endpoint
+        
             fetch('/api/run-script', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ prompt: promptInput.value, script }),
+                body: JSON.stringify({ prompt: prompt, username: 'username' }),  // Replace 'username' with the actual username
             })
             .then(response => response.json())
             .then(data => {
-                responseBox.textContent = `Your query: ${promptInput.value}\nResponse: ${data}`;
+                responseBox.textContent = `Your query: ${promptInput.value}\nResponse: ${data.response}`;
             })
             .catch((error) => {
                 console.error('Error:', error);
                 responseBox.textContent = `Your query: ${promptInput.value}\nError: ${error}`;
             });
+        }
 
             // Clear the input box
             promptInput.value = '';
@@ -116,4 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
     heroVideo.addEventListener('ended', () => {
         heroVideo.style.display = 'none';
     });
-});
+
+// Remove the extra closing curly braces
+// });
+
+

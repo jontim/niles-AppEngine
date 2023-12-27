@@ -1,13 +1,19 @@
 from openai import OpenAI
 import shelve
-from dotenv import load_dotenv
-import os
+from google.cloud import secretmanager
 import time
 
-load_dotenv()
 
-# Get the OpenAI API key from an environment variable
-OPEN_AI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Function to access secret in Google Secret Manager
+def access_secret_version(project_id, secret_id, version_id):
+    client = secretmanager.SecretManagerServiceClient()
+    name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+    response = client.access_secret_version(request={"name": name})
+    return response.payload.data.decode('UTF-8')
+
+# Get the OpenAI API key from Google Secret Manager
+OPEN_AI_API_KEY = access_secret_version('api-call-niles', 'projects/857423205039/secrets/OPENAI_API_KEY', '1')
+
 client = OpenAI(api_key=OPEN_AI_API_KEY)
 
 # --------------------------------------------------------------
